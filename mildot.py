@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 """
+    Angular range calculator
     Mildot Master clone
     Requires pynomo, which can be a Bit to set up. Good luck!
 
@@ -7,11 +8,13 @@
 """
 
 import sys
+from pynomo.nomographer import *
+from math import log, cos, radians
 
 sys.path.insert(0, "..")
 # sys.path[:0] = [".."]
-from pynomo.nomographer import *
-from math import log, cos, radians
+
+version = "1.0.1-prerelease"
 
 mils_scale = {
     # mils
@@ -109,22 +112,22 @@ adjusted_range_scale = {
 
 block_1_params = {
     'block_type': 'type_1',
-    'height': 20.0,
-    'width': 4.0,
+    'height': 10.0,
+    'width': 5.0,
     'f1_params': mils_scale,
     'f2_params': size_scale,
     'f3_params': range_scale_1,
-    'isopleth_values': [[2, 12, 'x']],
+    'isopleth_values': [[1.5, 12, 'x']],
 }
 
 block_2_params = {
     'block_type': 'type_1',
-    'height': 30.0,
+    'height': 10.0,
     'width': 1.0,
     'f1_params': range_scale_2,
     'f2_params': angle_scale,
     'f3_params': adjusted_range_scale,
-    'isopleth_values': [[200, 30, 'x']],
+    'isopleth_values': [[223, 30, 'x']],
 }
 
 main_params = {
@@ -133,6 +136,8 @@ main_params = {
     'paper_height': 22.0,
     'paper_width': 14.0,
     'transformations': [('rotate', 0.01), ('scale paper',)],
+    'title_str': "Angular range calculator v" + version,
+    'title_y': 23.5,  # If this isn't set higher than paper_height, the title and scale overlap badly.
 }
 
 Nomographer(main_params)
