@@ -8,14 +8,38 @@
 """
 
 import sys
-from pynomo.nomographer import *
+from pynomo import *
+import wrapt
 from math import log, cos, radians
 from pyx import text
 
 sys.path.insert(0, "..")
 # sys.path[:0] = [".."]
 
-version = "1.0.1-prerelease"
+version = "1.0.2-prerelease"
+
+
+@wrapt.patch_function_wrapper(nomo_axis.Nomo_Axis, '_put_text_')
+def new_put_text(wrapped, instance, args, kwargs):
+    u = args[0]
+    if instance.text_style == 'oldstyle':
+        return r"$\oldstylenums{%3.2f}$ " % u
+    else:
+        # return r"$%3.2f$ " %u
+        if instance.axis_appear['text_format_func'] is not None:
+            return instance.axis_appear['text_format_func'](u)
+        return instance.axis_appear['text_format'] % u
+
+
+def format_feet(n):
+    """Converts a length in inches to both feet and inches in a nicely formatted string."""
+    feet = int(n) // 12
+    inches = int(n) % 12
+    if feet == 0:
+        return f"${inches}''$ "
+    else:
+        return r"${}' {}''$ ".format(feet, inches)
+
 
 mils_scale = {
     # mils
@@ -24,7 +48,6 @@ mils_scale = {
     'function': lambda m: log(m),
     'scale_type': 'linear smart',
     'title': 'Mils',
-    # TODO: split this into ranges so I can label the first few tick marks
     'tick_levels': 3,
     'tick_text_levels': 2,
     'extra_params': [{
@@ -46,11 +69,14 @@ mils_scale = {
 
 size_scale = {
     # size
-    # TODO: make this display feet and inches properly. Make it a dual scale with meters?
-    'u_min': 6,
-    'u_max': 96,
+    # TODO: make this a dual scale with meters
+    # TODO: also make this scale a LOT prettier in regards to feet and inches
+    'u_min': 4,
+    'u_max': 240,
     'function': lambda s: -log(s),
     'scale_type': 'linear smart',
+    'text_format_func': lambda n: format_feet(n),
+    'text_size_0': text.size.scriptsize,
     'title': 'Target size (in)',
     'tick_levels': 3,
     'tick_text_levels': 2,
@@ -81,11 +107,10 @@ range_scale_2 = {
 
 angle_scale = {
     # angle target is at, 0 is default
-    # TODO: pretty-print degrees with ° (maybe number format can help?)
     'u_min': 15,
     'u_max': 60,
     'function': lambda a: log(cos(radians(a))),
-    'text_format': r'$%3d^{\circ}$ ',
+    'text_format': r'$%3d^\circ$ ',
     'scale type': 'linear smart',
     'title': 'Angle',
     'tick_levels': 2,
@@ -140,4 +165,4 @@ main_params = {
     'title_y': 23.5,  # If this isn't set higher than paper_height, the title and scale overlap badly.
 }
 
-Nomographer(main_params)
+nomographer.Nomographer(main_params)
