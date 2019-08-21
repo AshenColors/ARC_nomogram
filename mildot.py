@@ -10,6 +10,7 @@
 import sys
 from pynomo.nomographer import *
 from math import log, cos, radians
+from pyx import text
 
 sys.path.insert(0, "..")
 # sys.path[:0] = [".."]
@@ -29,6 +30,7 @@ mils_scale = {
     'extra_params': [{
         'scale_type': 'manual line',
         'grid_length_1': 0.2,
+        'text_size_manual': text.size.scriptsize,
         'manual_axis_data': {
             1.25: '1.25',
             1.75: '1.75',
@@ -38,16 +40,6 @@ mils_scale = {
             3.75: '',
             4.25: '',
             4.75: '',
-            5.25: '',
-            5.75: '',
-            6.25: '',
-            6.75: '',
-            7.25: '',
-            7.75: '',
-            8.25: '',
-            8.75: '',
-            9.25: '',
-            9.75: '',
         }
     }]
 }
@@ -93,10 +85,17 @@ angle_scale = {
     'u_min': 15,
     'u_max': 60,
     'function': lambda a: log(cos(radians(a))),
+    'text_format': r'$%3d^{\circ}$ ',
     'scale type': 'linear smart',
     'title': 'Angle',
     'tick_levels': 2,
-    'tick_text_levels': 1,
+    'tick_text_levels': 2,
+    'text_size_0': text.size.tiny,
+    'text_size_1': text.size.small,
+    'grid_length_0': 0.25,
+    'grid_length_1': 0.75,
+    'text_distance_0': 0.30,
+    'text_distance_1': 0.85,
 }
 
 adjusted_range_scale = {
