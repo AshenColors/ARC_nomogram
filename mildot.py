@@ -23,14 +23,15 @@ mils_scale = {
     'function': lambda m: log(m),
     'scale_type': 'linear smart',
     'title': 'Mils',
-    'tick_levels': 2,
+    # TODO: split this into ranges so I can label the first few tick marks
+    'tick_levels': 3,
     'tick_text_levels': 2,
     'extra_params': [{
         'scale_type': 'manual line',
-        'grid_length_1': 0.1,
+        'grid_length_1': 0.2,
         'manual_axis_data': {
-            1.25: '',
-            1.75: '',
+            1.25: '1.25',
+            1.75: '1.75',
             2.25: '',
             2.75: '',
             3.25: '',
@@ -55,7 +56,7 @@ size_scale = {
     # size
     # TODO: make this display feet and inches properly. Make it a dual scale with meters?
     'u_min': 6,
-    'u_max': 72,
+    'u_max': 96,
     'function': lambda s: -log(s),
     'scale_type': 'linear smart',
     'title': 'Target size (in)',
@@ -66,23 +67,23 @@ size_scale = {
 range_scale_1 = {
     # range
     'tag': range,
-    'u_min': 50,
-    'u_max': 500,
+    'u_min': 100,
+    'u_max': 2000,
     'function': lambda r: log(r) - log(27.77),
     'scale_type': 'linear smart',
     'title': 'Range (yd)',
-    'tick_levels': 4,
+    'tick_levels': 3,
     'tick_text_levels': 3,
 }
 
 range_scale_2 = {
     # range
     'tag': range,
-    'u_min': 50,
-    'u_max': 500,
+    'u_min': 100,
+    'u_max': 2000,
     'function': lambda r: log(r),
     'scale_type': 'linear smart',
-    'tick_levels': 4,
+    'tick_levels': 3,
     'tick_text_levels': 3,
 }
 
@@ -100,12 +101,12 @@ angle_scale = {
 
 adjusted_range_scale = {
     # range
-    'u_min': 50,
-    'u_max': 500,
+    'u_min': 100,
+    'u_max': 2000,
     'function': lambda ar: -log(ar),
     'scale_type': 'linear smart',
     'title': 'Adj Range (yd)',
-    'tick_levels': 4,
+    'tick_levels': 3,
     'tick_text_levels': 3,
     'tick_side': 'left',
 }
@@ -113,7 +114,7 @@ adjusted_range_scale = {
 block_1_params = {
     'block_type': 'type_1',
     'height': 10.0,
-    'width': 5.0,
+    'width': 6.0,
     'f1_params': mils_scale,
     'f2_params': size_scale,
     'f3_params': range_scale_1,
@@ -123,7 +124,7 @@ block_1_params = {
 block_2_params = {
     'block_type': 'type_1',
     'height': 10.0,
-    'width': 1.0,
+    'width': 2.0,
     'f1_params': range_scale_2,
     'f2_params': angle_scale,
     'f3_params': adjusted_range_scale,
