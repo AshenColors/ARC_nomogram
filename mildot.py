@@ -15,9 +15,8 @@ from pyx import text
 from wrapt import patch_function_wrapper
 
 sys.path.insert(0, "..")
-# sys.path[:0] = [".."]
 
-version = "1.0.4"
+version = "1.0.5"
 
 
 @patch_function_wrapper(nomo_axis.Nomo_Axis, '_put_text_')
@@ -70,8 +69,12 @@ mils_scale = {
         'u_max': 10,
         'scale_type': 'manual line',
         'manual_axis_data':
-            {i / 100: '' for i in range(100, 1000, 10)},
-        'grid_length_1': 0.15
+            {**{i / 100: i / 100 for i in range(100, 200, 10)},
+             **{i / 100: i / 100 for i in range(110, 150, 10)},
+             **{i / 100: i / 100 for i in range(160, 200, 10)},
+             **{i: '' for i in range(110, 1000, 10)}},
+        'grid_length_1': 0.15,
+        'text_distance_1': 0.25
     }]
 }
 
@@ -173,7 +176,7 @@ block_2_params = {
     'f1_params': range_scale_2,
     'f2_params': angle_scale,
     'f3_params': adjusted_range_scale,
-    'isopleth_values': [[220, 30, 'x']],
+    'isopleth_values': [[668, 30, 'x']],
 }
 
 main_params = {
