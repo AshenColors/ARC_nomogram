@@ -16,7 +16,7 @@ from wrapt import patch_function_wrapper
 
 sys.path.insert(0, "..")
 
-version = "1.0.5"
+version = "1.0.6"
 
 
 @patch_function_wrapper(nomo_axis.Nomo_Axis, '_put_text_')
@@ -53,28 +53,30 @@ mils_scale = {
     'u_max': 10,
     'function': lambda m: log(m),
     'scale_type': 'manual line',
-    'text_size_manual': text.size.scriptsize,
+    'text_size_manual': text.size.small,
     'manual_axis_data':
         {**{i / 100: i / 100 for i in range(125, 300, 50)}, **{i / 100: '' for i in range(325, 1000, 50)}},
-    'grid_length_1': 0.3,
-    'text_distance_1': 0.4,
+    'grid_length_1': 0.5,
+    'text_distance_1': 0.7,
     'extra_params': [{
         'u_min': 1,
         'u_max': 10,
         'scale_type': 'linear smart',
         'tick_levels': 2,
         'tick_text_levels': 2,
+        'text_size_1': text.size.small,
+        'text_distance_1': 0.7,
     }, {
         'u_min': 1,
         'u_max': 10,
         'scale_type': 'manual line',
         'manual_axis_data':
-            {**{i / 100: i / 100 for i in range(100, 200, 10)},
-             **{i / 100: i / 100 for i in range(110, 150, 10)},
+            {**{i / 100: i / 100 for i in range(110, 150, 10)},
              **{i / 100: i / 100 for i in range(160, 200, 10)},
-             **{i: '' for i in range(110, 1000, 10)}},
+             **{i / 100: '' for i in range(210, 1000, 10)}},
         'grid_length_1': 0.15,
-        'text_distance_1': 0.25
+        'text_distance_1': 0.25,
+        'text_size_manual': text.size.scriptsize,
     }]
 }
 
