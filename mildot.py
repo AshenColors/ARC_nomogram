@@ -4,22 +4,23 @@
     Mildot Master clone
     Requires pynomo, which can be a Bit to set up. Good luck!
 
-    TODO: add bullet drop and dual mils/MOA scale.
+    TODO: add bullet drop and dual mils/MOA scale. It'll probably have to be on a different nomogram altogether.
 """
 
 import sys
-from pynomo import *
-import wrapt
+from wrapt import patch_function_wrapper
+from itertools import chain
 from math import log, cos, radians
+from pynomo import *
 from pyx import text
 
 sys.path.insert(0, "..")
 # sys.path[:0] = [".."]
 
-version = "1.0.2-prerelease"
+version = "1.0.3-prerelease"
 
 
-@wrapt.patch_function_wrapper(nomo_axis.Nomo_Axis, '_put_text_')
+@patch_function_wrapper(nomo_axis.Nomo_Axis, '_put_text_')
 def new_put_text(wrapped, instance, args, kwargs):
     u = args[0]
     if instance.text_style == 'oldstyle':
@@ -33,37 +34,36 @@ def new_put_text(wrapped, instance, args, kwargs):
 
 def format_feet(n):
     """Converts a length in inches to both feet and inches in a nicely formatted string."""
-    feet = int(n) // 12
-    inches = int(n) % 12
+    n = int(n)
+    feet = n // 12
+    inches = n % 12
     if feet == 0:
         return f"${inches}''$ "
+    elif n < 60:
+        return f"${n}''$ "
+    elif n >= 120 and inches == 0:
+        return f"${feet}'$ "
     else:
         return r"${}' {}''$ ".format(feet, inches)
 
 
 mils_scale = {
     # mils
+    'title': 'Mils',
     'u_min': 1,
     'u_max': 10,
     'function': lambda m: log(m),
-    'scale_type': 'linear smart',
-    'title': 'Mils',
-    'tick_levels': 3,
-    'tick_text_levels': 2,
+    'scale_type': 'manual line',
+    'text_size_manual': text.size.scriptsize,
+    'manual_axis_data':
+        {**{i / 100: i / 100 for i in range(125, 300, 50)}, **{i / 100: '' for i in range(325, 1000, 50)}},
+    'grid_length_1': 0.2,
     'extra_params': [{
-        'scale_type': 'manual line',
-        'grid_length_1': 0.2,
-        'text_size_manual': text.size.scriptsize,
-        'manual_axis_data': {
-            1.25: '1.25',
-            1.75: '1.75',
-            2.25: '',
-            2.75: '',
-            3.25: '',
-            3.75: '',
-            4.25: '',
-            4.75: '',
-        }
+        'u_min': 1,
+        'u_max': 10,
+        'scale_type': 'linear smart',
+        'tick_levels': 2,
+        'tick_text_levels': 2,
     }]
 }
 
@@ -74,12 +74,25 @@ size_scale = {
     'u_min': 4,
     'u_max': 240,
     'function': lambda s: -log(s),
-    'scale_type': 'linear smart',
+    'scale_type': 'manual line',
+    'manual_axis_data':
+        {i: format_feet(i) for i in chain(range(4, 16), range(16, 40, 2), range(40, 60, 5),
+                                          range(60, 108, 6), range(108, 241, 12))},
+    'grid_length_1': 0.6,
     'text_format_func': lambda n: format_feet(n),
-    'text_size_0': text.size.scriptsize,
+    'text_size_manual': text.size.scriptsize,
+    'text_distance_1': 0.7,
     'title': 'Target size (in)',
-    'tick_levels': 3,
-    'tick_text_levels': 2,
+    'extra_params': [{
+        # This part is for the minor markings between numbered ticks.
+        # 'linear smart' doesn't handle this very well, so we've gotta do it manually.
+        'u_min': 4,
+        'u_max': 240,
+        'scale_type': 'manual line',
+        'manual_axis_data':
+            {i: '' for i in chain(range(16, 60), range(60, 108, 2), range(108, 240, 6))},
+        'grid_length_1': 0.3,
+    }]
 }
 
 range_scale_1 = {
@@ -158,11 +171,11 @@ block_2_params = {
 main_params = {
     'filename': 'mildot.pdf',
     'block_params': [block_1_params, block_2_params],
-    'paper_height': 22.0,
+    'paper_height': 33.0,
     'paper_width': 14.0,
     'transformations': [('rotate', 0.01), ('scale paper',)],
     'title_str': "Angular range calculator v" + version,
-    'title_y': 23.5,  # If this isn't set higher than paper_height, the title and scale overlap badly.
+    'title_y': 34.5,  # If this isn't set 1.5 higher than paper_height, the title and scale overlap badly.
 }
 
 nomographer.Nomographer(main_params)
