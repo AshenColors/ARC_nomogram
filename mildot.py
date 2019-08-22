@@ -8,16 +8,16 @@
 """
 
 import sys
-from wrapt import patch_function_wrapper
 from itertools import chain
 from math import log, cos, radians
 from pynomo import *
 from pyx import text
+from wrapt import patch_function_wrapper
 
 sys.path.insert(0, "..")
 # sys.path[:0] = [".."]
 
-version = "1.0.3-prerelease"
+version = "1.0.4"
 
 
 @patch_function_wrapper(nomo_axis.Nomo_Axis, '_put_text_')
@@ -57,13 +57,21 @@ mils_scale = {
     'text_size_manual': text.size.scriptsize,
     'manual_axis_data':
         {**{i / 100: i / 100 for i in range(125, 300, 50)}, **{i / 100: '' for i in range(325, 1000, 50)}},
-    'grid_length_1': 0.2,
+    'grid_length_1': 0.3,
+    'text_distance_1': 0.4,
     'extra_params': [{
         'u_min': 1,
         'u_max': 10,
         'scale_type': 'linear smart',
         'tick_levels': 2,
         'tick_text_levels': 2,
+    }, {
+        'u_min': 1,
+        'u_max': 10,
+        'scale_type': 'manual line',
+        'manual_axis_data':
+            {i / 100: '' for i in range(100, 1000, 10)},
+        'grid_length_1': 0.15
     }]
 }
 
@@ -155,7 +163,7 @@ block_1_params = {
     'f1_params': mils_scale,
     'f2_params': size_scale,
     'f3_params': range_scale_1,
-    'isopleth_values': [[1.5, 12, 'x']],
+    'isopleth_values': [[3, 72, 'x']],
 }
 
 block_2_params = {
@@ -165,7 +173,7 @@ block_2_params = {
     'f1_params': range_scale_2,
     'f2_params': angle_scale,
     'f3_params': adjusted_range_scale,
-    'isopleth_values': [[223, 30, 'x']],
+    'isopleth_values': [[220, 30, 'x']],
 }
 
 main_params = {
